@@ -1,24 +1,63 @@
 ﻿# Notes App
 
-Ini aplikasi catatan sederhana (CRUD) dengan login.
+Aplikasi catatan sederhana dengan fitur login dan CRUD notes.
 
-Stack:
-- Frontend: React (Vite)
-- Backend: Express
+## Tech Stack
+
+- Frontend: React 19 + Vite 5
+- Backend: Node.js + Express 5
 - Database: MySQL/MariaDB (XAMPP)
+- Driver DB: mysql2
+- Utility: dotenv, cors, concurrently
 
-## Sebelum mulai
+## Struktur Direktori
 
-Pastikan sudah ada:
-- Node.js
-- npm
-- XAMPP
+```text
+EbybTest/
+├─ backend/
+│  ├─ src/
+│  │  ├─ config/           # DB pool, DB init, token store
+│  │  ├─ middlewares/      # auth dan error handler
+│  │  ├─ modules/
+│  │  │  ├─ auth/          # auth.controller + auth.routes
+│  │  │  └─ notes/         # note.model + note.controller + note.routes
+│  │  ├─ app.js
+│  │  └─ server.js
+│  └─ package.json
+├─ frontend/
+│  ├─ src/
+│  │  ├─ features/
+│  │  │  ├─ auth/         # LoginPanel + auth.service
+│  │  │  └─ notes/        # NotesPanel + notes.service
+│  │  ├─ shared/          # konstanta global frontend
+│  │  ├─ App.jsx
+│  │  ├─ App.css
+│  │  └─ index.css
+│  └─ package.json
+├─ package.json            # runner root (npm run dev)
+└─ README.md
+```
 
-Nyalakan MySQL dari XAMPP dulu.
+## Kenapa node_modules ada 3?
 
-## Konfigurasi
+Normal. Di project ini ada 3 package.json berbeda:
 
-Isi backend env di `backend/.env`:
+- root/package.json untuk menjalankan backend + frontend bareng
+- backend/package.json untuk dependency backend
+- frontend/package.json untuk dependency frontend
+
+Karena itu setiap folder punya node_modules sendiri.
+
+## Persiapan
+
+1. Pastikan sudah install Node.js, npm, dan XAMPP.
+2. Nyalakan MySQL dari XAMPP.
+
+## Konfigurasi Environment
+
+### Backend
+
+Buat atau isi file backend/.env:
 
 ```env
 PORT=3000
@@ -27,62 +66,61 @@ DB_PORT=3406
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=notes_app
-```
-
-Isi frontend env di `frontend/.env`:
-
-```env
-VITE_API_BASE_URL=http://localhost:3000/api
-```
-
-Catatan: database dan tabel akan dibuat otomatis saat backend jalan.
-
-Login demo backend (default):
-
-```env
 DEMO_LOGIN_EMAIL=tester@notes.local
 DEMO_LOGIN_PASSWORD=12345678
 ```
 
-Akun demo ini juga ditampilkan langsung di halaman login web, jadi tester tinggal pakai.
+Catatan: database dan tabel dibuat otomatis saat backend start.
 
-## Cara jalanin
+### Frontend
 
-Di root project:
+Buat atau isi file frontend/.env:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_DEMO_EMAIL=tester@notes.local
+VITE_DEMO_PASSWORD=12345678
+```
+
+## Cara Menjalankan
+
+Jalankan dari root project:
 
 ```powershell
 npm install
 npm run dev
 ```
 
-Kalau sukses:
+URL aplikasi:
+
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3000
 
-## Cara test cepat
+## Cara Penggunaan Aplikasi
 
-1. Buka frontend.
-2. Login pakai akun demo yang tampil di halaman.
-3. Tambah catatan.
+1. Buka halaman frontend.
+2. Login menggunakan akun demo yang tampil di halaman.
+3. Tambah catatan baru.
 4. Edit catatan.
 5. Hapus catatan.
-6. Klik refresh, pastikan data masih sesuai.
+6. Klik Refresh untuk cek data terbaru.
 
-## Cek API (opsional)
+## Pengujian API Singkat
 
 ```powershell
-Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/health" | ConvertTo-Json -Depth 5
+Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/health"
+
 $login = Invoke-RestMethod -Method Post -Uri "http://localhost:3000/api/auth/login" -ContentType "application/json" -Body '{"email":"tester@notes.local","password":"12345678"}'
 $headers = @{ Authorization = "Bearer $($login.token)" }
-Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/notes" -Headers $headers | ConvertTo-Json -Depth 5
+Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/notes" -Headers $headers
 ```
 
-## Kalau ada error
+## Troubleshooting
 
 - Jalankan command dari folder root project.
-- Cek MySQL XAMPP masih aktif.
-- Cek isi `backend/.env` dan `frontend/.env`.
+- Pastikan MySQL XAMPP aktif di port yang sesuai.
+- Pastikan backend/.env dan frontend/.env sudah benar.
 
-## Stop aplikasi
+## Stop Aplikasi
 
-Di terminal yang jalanin `npm run dev`, tekan Ctrl + C.
+Tekan Ctrl + C di terminal yang menjalankan npm run dev.

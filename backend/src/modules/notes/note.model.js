@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const pool = require('../../config/db');
 
 async function createNote({ title, content }) {
   const query = 'INSERT INTO notes (title, content) VALUES (?, ?)';

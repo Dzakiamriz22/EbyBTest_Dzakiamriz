@@ -1,4 +1,4 @@
-const { issueToken, revokeToken } = require('../config/authStore');
+const { issueToken, revokeToken } = require('../../config/authStore');
 
 const DEMO_EMAIL = process.env.DEMO_LOGIN_EMAIL || 'tester@notes.local';
 const DEMO_PASSWORD = process.env.DEMO_LOGIN_PASSWORD || '12345678';

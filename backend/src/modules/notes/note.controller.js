@@ -1,4 +1,4 @@
-const noteModel = require('../models/noteModel');
+const noteModel = require('./note.model');
 
 function isValidPayload(title, content) {
   return typeof title === 'string' && title.trim() !== '' && typeof content === 'string';

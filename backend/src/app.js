@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const noteRoutes = require('./routes/noteRoutes');
-const authRoutes = require('./routes/authRoutes');
+const noteRoutes = require('./modules/notes/note.routes');
+const authRoutes = require('./modules/auth/auth.routes');
 const authMiddleware = require('./middlewares/authMiddleware');
 const { notFoundHandler, errorHandler } = require('./middlewares/errorHandler');
 
