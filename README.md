@@ -10,44 +10,6 @@ Aplikasi catatan sederhana dengan fitur login dan CRUD notes.
 - Driver DB: mysql2
 - Utility: dotenv, cors, concurrently
 
-## Struktur Direktori
-
-```text
-EbybTest/
-├─ backend/
-│  ├─ src/
-│  │  ├─ config/           # DB pool, DB init, token store
-│  │  ├─ middlewares/      # auth dan error handler
-│  │  ├─ modules/
-│  │  │  ├─ auth/          # auth.controller + auth.routes
-│  │  │  └─ notes/         # note.model + note.controller + note.routes
-│  │  ├─ app.js
-│  │  └─ server.js
-│  └─ package.json
-├─ frontend/
-│  ├─ src/
-│  │  ├─ features/
-│  │  │  ├─ auth/         # LoginPanel + auth.service
-│  │  │  └─ notes/        # NotesPanel + notes.service
-│  │  ├─ shared/          # konstanta global frontend
-│  │  ├─ App.jsx
-│  │  ├─ App.css
-│  │  └─ index.css
-│  └─ package.json
-├─ package.json            # runner root (npm run dev)
-└─ README.md
-```
-
-## Kenapa node_modules ada 3?
-
-Normal. Di project ini ada 3 package.json berbeda:
-
-- root/package.json untuk menjalankan backend + frontend bareng
-- backend/package.json untuk dependency backend
-- frontend/package.json untuk dependency frontend
-
-Karena itu setiap folder punya node_modules sendiri.
-
 ## Persiapan
 
 1. Pastikan sudah install Node.js, npm, dan XAMPP.
@@ -96,6 +58,11 @@ URL aplikasi:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3000
 
+## Akun Login Demo
+
+- Email: tester@notes.local
+- Password: 12345678
+
 ## Cara Penggunaan Aplikasi
 
 1. Buka halaman frontend.
@@ -120,6 +87,7 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/notes" -Headers $h
 - Jalankan command dari folder root project.
 - Pastikan MySQL XAMPP aktif di port yang sesuai.
 - Pastikan backend/.env dan frontend/.env sudah benar.
+- Jika port sudah dipakai, stop proses lama lalu jalankan lagi npm run dev.
 
 ## Stop Aplikasi
 
