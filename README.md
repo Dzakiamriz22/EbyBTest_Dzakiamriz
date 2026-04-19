@@ -51,7 +51,6 @@ Akun demo ini juga ditampilkan langsung di halaman login web, jadi tester tingga
 Di root project:
 
 ```powershell
-cd D:\Dzakiamriz\EbybTest
 npm install
 npm run dev
 ```
