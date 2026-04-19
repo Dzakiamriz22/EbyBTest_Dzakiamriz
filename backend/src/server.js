@@ -1,11 +1,15 @@
 require('dotenv').config();
 const app = require('./app');
 const pool = require('./config/db');
+const initializeDatabase = require('./config/initDb');
 
 const port = process.env.PORT || 3000;
 
 async function startServer() {
   try {
+    await initializeDatabase();
+    console.log('Database dan tabel siap');
+
     await pool.query('SELECT 1');
     console.log('Database terkoneksi');
 
