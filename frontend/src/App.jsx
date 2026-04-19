@@ -5,10 +5,24 @@ const API_ROOT =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ||
   'http://localhost:3000/api'
 const API_BASE_URL = `${API_ROOT}/notes`
+const API_AUTH_URL = `${API_ROOT}/auth`
+const AUTH_TOKEN_KEY = 'notes_app_token'
+const DEMO_EMAIL_FALLBACK = import.meta.env.VITE_DEMO_EMAIL || 'tester@notes.local'
+const DEMO_PASSWORD_FALLBACK = import.meta.env.VITE_DEMO_PASSWORD || '12345678'
 const TITLE_MIN_LENGTH = 3
 const CONTENT_MAX_LENGTH = 5000
 
 function App() {
+  const [token, setToken] = useState(() => localStorage.getItem(AUTH_TOKEN_KEY) || '')
+  const [loginEmail, setLoginEmail] = useState(DEMO_EMAIL_FALLBACK)
+  const [loginPassword, setLoginPassword] = useState(DEMO_PASSWORD_FALLBACK)
+  const [authLoading, setAuthLoading] = useState(false)
+  const [authError, setAuthError] = useState('')
+  const [demoAccount, setDemoAccount] = useState({
+    email: DEMO_EMAIL_FALLBACK,
+    password: DEMO_PASSWORD_FALLBACK,
+  })
+
   const [notes, setNotes] = useState([])
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -20,12 +34,59 @@ function App() {
 
   const isEditing = useMemo(() => editingId !== null, [editingId])
 
+  async function fetchDemoAccount() {
+    try {
+      const response = await fetch(`${API_AUTH_URL}/demo-account`)
+
+      if (!response.ok) {
+        return
+      }
+
+      const data = await response.json()
+      setDemoAccount({
+        email: data.email || DEMO_EMAIL_FALLBACK,
+        password: data.password || DEMO_PASSWORD_FALLBACK,
+      })
+    } catch {
+      // Tetap aman karena fallback akun demo sudah diset di state awal.
+    }
+  }
+
+  async function apiRequest(url, options = {}, withAuth = true) {
+    const headers = {
+      ...(options.headers || {}),
+    }
+
+    if (withAuth && token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    })
+
+    if (response.status === 401 && withAuth) {
+      localStorage.removeItem(AUTH_TOKEN_KEY)
+      setToken('')
+      setNotes([])
+      throw new Error('Sesi habis, silakan login lagi')
+    }
+
+    return response
+  }
+
   async function fetchNotes() {
+    if (!token) {
+      setLoading(false)
+      return
+    }
+
     setError('')
     setLoading(true)
 
     try {
-      const response = await fetch(API_BASE_URL)
+      const response = await apiRequest(API_BASE_URL)
 
       if (!response.ok) {
         throw new Error('Gagal mengambil daftar catatan')
@@ -41,8 +102,77 @@ function App() {
   }
 
   useEffect(() => {
-    fetchNotes()
+    fetchDemoAccount()
   }, [])
+
+  useEffect(() => {
+    fetchNotes()
+  }, [token])
+
+  async function handleLogin(event) {
+    event.preventDefault()
+
+    if (!loginEmail.trim() || !loginPassword) {
+      setAuthError('Email dan password wajib diisi')
+      return
+    }
+
+    setAuthError('')
+    setAuthLoading(true)
+
+    try {
+      const response = await apiRequest(
+        `${API_AUTH_URL}/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: loginEmail.trim(),
+            password: loginPassword,
+          }),
+        },
+        false,
+      )
+
+      if (!response.ok) {
+        throw new Error('Login gagal, cek email/password')
+      }
+
+      const data = await response.json()
+      localStorage.setItem(AUTH_TOKEN_KEY, data.token)
+      setToken(data.token)
+      setLoginPassword('')
+      setAuthError('')
+      setSuccess('Login berhasil')
+    } catch (err) {
+      setAuthError(err.message || 'Login gagal')
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await apiRequest(
+        `${API_AUTH_URL}/logout`,
+        {
+          method: 'POST',
+        },
+        true,
+      )
+    } catch {
+      // Abaikan error logout API, tetap hapus token di client.
+    }
+
+    localStorage.removeItem(AUTH_TOKEN_KEY)
+    setToken('')
+    setNotes([])
+    setSuccess('')
+    setError('')
+    resetForm()
+  }
 
   function resetForm() {
     setTitle('')
@@ -91,7 +221,7 @@ function App() {
       const endpoint = isEditing ? `${API_BASE_URL}/${editingId}` : API_BASE_URL
       const method = isEditing ? 'PUT' : 'POST'
 
-      const response = await fetch(endpoint, {
+      const securedResponse = await apiRequest(endpoint, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +229,7 @@ function App() {
         body: JSON.stringify(payload),
       })
 
-      if (!response.ok) {
+      if (!securedResponse.ok) {
         throw new Error(
           isEditing ? 'Gagal memperbarui catatan' : 'Gagal menambahkan catatan',
         )
@@ -133,7 +263,7 @@ function App() {
     setSuccess('')
 
     try {
-      const response = await fetch(`${API_BASE_URL}/${id}`, {
+      const response = await apiRequest(`${API_BASE_URL}/${id}`, {
         method: 'DELETE',
       })
 
@@ -165,15 +295,63 @@ function App() {
     <main className="app-shell">
       <header className="app-header">
         <p className="kicker">Notes App</p>
-        <h1>Catat ide, kerjakan cepat</h1>
+        <h1>Catatan Harian</h1>
         <p className="subtitle">
-          Frontend React terhubung langsung ke API Express + MySQL.
+          Login dulu, lalu cek fitur CRUD langsung.
         </p>
       </header>
 
+      {!token ? (
+        <section className="panel panel-auth">
+          <h2>Login</h2>
+
+          {demoAccount.email && (
+            <div className="demo-box">
+              <p><strong>Akun demo untuk tester:</strong></p>
+              <p>Email: {demoAccount.email}</p>
+              <p>Password: {demoAccount.password}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="note-form">
+            <label htmlFor="login-email">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              value={loginEmail}
+              onChange={(event) => setLoginEmail(event.target.value)}
+              placeholder="email"
+              required
+            />
+
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              value={loginPassword}
+              onChange={(event) => setLoginPassword(event.target.value)}
+              placeholder="password"
+              required
+            />
+
+            {authError && <p className="error-text">{authError}</p>}
+
+            <div className="action-row">
+              <button type="submit" className="btn btn-primary" disabled={authLoading}>
+                {authLoading ? 'Masuk...' : 'Login'}
+              </button>
+            </div>
+          </form>
+        </section>
+      ) : (
       <section className="layout-grid">
         <article className="panel panel-form">
-          <h2>{isEditing ? 'Edit Catatan' : 'Tambah Catatan'}</h2>
+          <div className="panel-top">
+            <h2>{isEditing ? 'Edit Catatan' : 'Tambah Catatan'}</h2>
+            <button type="button" className="btn btn-ghost" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="note-form">
             <label htmlFor="title">Judul</label>
@@ -266,6 +444,7 @@ function App() {
           )}
         </article>
       </section>
+      )}
     </main>
   )
 }

@@ -40,6 +40,21 @@
   margin-bottom: 8px;
 }
 
+.panel-auth {
+  max-width: 420px;
+}
+
+.demo-box {
+  border: 1px dotted #666;
+  background: #fff;
+  padding: 6px;
+  margin-bottom: 8px;
+}
+
+.demo-box p {
+  margin: 2px 0;
+}
+
 .panel h2 {
   margin: 0 0 8px;
   color: #000;

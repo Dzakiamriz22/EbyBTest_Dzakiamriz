@@ -1,26 +1,24 @@
-﻿# Notes App - User Test Guide
+﻿# Notes App
 
-Project ini adalah aplikasi Notes App sederhana (CRUD) dengan stack:
+Ini aplikasi catatan sederhana (CRUD) dengan login.
+
+Stack:
 - Frontend: React (Vite)
-- Backend: Express.js
+- Backend: Express
 - Database: MySQL/MariaDB (XAMPP)
 
-## 1) Prasyarat
+## Sebelum mulai
 
-Pastikan sudah terpasang:
-- Node.js (disarankan versi 20+)
+Pastikan sudah ada:
+- Node.js
 - npm
-- XAMPP (MySQL aktif)
+- XAMPP
 
-## 2) Database (Otomatis)
+Nyalakan MySQL dari XAMPP dulu.
 
-1. Cukup jalankan MySQL dari XAMPP.
-2. Database `notes_app` dan tabel `notes` akan dibuat otomatis oleh backend saat start.
+## Konfigurasi
 
-## 3) Konfigurasi Environment
-
-### Backend (`backend/.env`)
-Gunakan nilai berikut (sesuaikan jika perlu):
+Isi backend env di `backend/.env`:
 
 ```env
 PORT=3000
@@ -31,62 +29,61 @@ DB_PASSWORD=
 DB_NAME=notes_app
 ```
 
-### Frontend
-Frontend sudah membaca API dari environment. Untuk local test, gunakan:
+Isi frontend env di `frontend/.env`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
-Bisa simpan di file `frontend/.env` (lihat contoh di `frontend/.env.example`).
+Catatan: database dan tabel akan dibuat otomatis saat backend jalan.
 
-## 4) Install Dependencies
+Login demo backend (default):
 
-Jalankan dari root project:
+```env
+DEMO_LOGIN_EMAIL=tester@notes.local
+DEMO_LOGIN_PASSWORD=12345678
+```
+
+Akun demo ini juga ditampilkan langsung di halaman login web, jadi tester tinggal pakai.
+
+## Cara jalanin
+
+Di root project:
 
 ```powershell
 cd D:\Dzakiamriz\EbybTest
 npm install
-```
-
-## 5) Menjalankan Aplikasi (Sekali Command)
-
-Masih dari root project:
-
-```powershell
 npm run dev
 ```
 
-Jika sukses:
-- Backend: http://localhost:3000
+Kalau sukses:
 - Frontend: http://localhost:5173
+- Backend: http://localhost:3000
 
-## 6) Skenario Test untuk Interview
+## Cara test cepat
 
-Buka http://localhost:5173 lalu uji:
-1. Tambah catatan baru (title + content)
-2. Lihat catatan muncul di list
-3. Edit catatan lalu simpan
-4. Hapus catatan
-5. Klik refresh dan pastikan data konsisten
+1. Buka frontend.
+2. Login pakai akun demo yang tampil di halaman.
+3. Tambah catatan.
+4. Edit catatan.
+5. Hapus catatan.
+6. Klik refresh, pastikan data masih sesuai.
 
-## 7) Cek API Cepat (Opsional)
+## Cek API (opsional)
 
 ```powershell
 Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/health" | ConvertTo-Json -Depth 5
-Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/notes" | ConvertTo-Json -Depth 5
+$login = Invoke-RestMethod -Method Post -Uri "http://localhost:3000/api/auth/login" -ContentType "application/json" -Body '{"email":"tester@notes.local","password":"12345678"}'
+$headers = @{ Authorization = "Bearer $($login.token)" }
+Invoke-RestMethod -Method Get -Uri "http://localhost:3000/api/notes" -Headers $headers | ConvertTo-Json -Depth 5
 ```
 
-## 8) Troubleshooting Singkat
+## Kalau ada error
 
-- Jika `npm run start` gagal dari root: gunakan `npm run dev` dari root (bukan start).
-- Jika backend gagal konek DB: cek MySQL XAMPP aktif dan nilai `backend/.env` benar.
-- Jika frontend tidak dapat data: pastikan `VITE_API_BASE_URL` mengarah ke backend yang aktif.
+- Jalankan command dari folder root project.
+- Cek MySQL XAMPP masih aktif.
+- Cek isi `backend/.env` dan `frontend/.env`.
 
-## 9) Stop Aplikasi
+## Stop aplikasi
 
-Di terminal yang menjalankan `npm run dev`, tekan:
-
-```text
-Ctrl + C
-```
+Di terminal yang jalanin `npm run dev`, tekan Ctrl + C.
