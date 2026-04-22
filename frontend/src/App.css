@@ -1,142 +1,175 @@
 .app-shell {
-  width: 760px;
-  max-width: 100%;
-  margin: 8px auto;
-  padding: 0 8px;
+  width: min(1120px, 100% - 2rem);
+  margin: 2rem auto 3rem;
 }
 
 .app-header {
-  margin-bottom: 8px;
-  color: #000;
+  margin-bottom: 1.25rem;
+  color: var(--text-strong);
+  animation: slide-in 0.45s ease-out;
 }
 
 .kicker {
   margin: 0;
-  font-size: 12px;
-  letter-spacing: 0;
-  text-transform: none;
-  color: #333;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-600);
 }
 
 .app-header h1 {
-  margin: 4px 0;
-  font-size: 24px;
-  line-height: 1.2;
+  margin: 0.2rem 0 0.25rem;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.07;
 }
 
 .subtitle {
   margin: 0;
-  color: #444;
+  max-width: 56ch;
+  color: var(--text-soft);
+}
+
+.header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.meta-pill {
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  background: var(--paper);
+}
+
+.meta-pill.is-live {
+  border-color: var(--ok);
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 10%, white);
 }
 
 .layout-grid {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .panel {
-  border: 1px solid #999;
-  background: #f5f5f5;
-  padding: 8px;
-  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: 0 10px 28px rgba(18, 30, 56, 0.08);
+  padding: 1rem;
+  margin-bottom: 0;
 }
 
 .panel-auth {
-  max-width: 420px;
+  max-width: 530px;
+  animation: slide-in 0.55s ease-out;
 }
 
 .demo-box {
-  border: 1px dotted #666;
-  background: #fff;
-  padding: 6px;
-  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--brand-500) 8%, white);
+  padding: 0.7rem;
+  margin-bottom: 1rem;
 }
 
 .demo-box p {
-  margin: 2px 0;
+  margin: 0.18rem 0;
 }
 
 .panel h2 {
-  margin: 0 0 8px;
-  color: #000;
-  font-size: 16px;
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.15rem;
 }
 
 .note-form {
   display: grid;
-  gap: 4px;
+  gap: 0.55rem;
 }
 
 .note-form label {
-  color: #111;
-  font-size: 13px;
-  font-weight: 400;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .note-form input,
 .note-form textarea {
   width: 100%;
-  border: 1px solid #777;
-  border-radius: 0;
-  padding: 4px;
-  background: #fff;
-  color: #000;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.7rem 0.82rem;
+  background: white;
+  color: var(--text-strong);
   font: inherit;
-  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .note-form input:focus,
 .note-form textarea:focus {
-  outline: 1px dotted #000;
-  border-color: #000;
+  outline: none;
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-500) 22%, white);
 }
 
 .action-row {
   display: flex;
-  gap: 4px;
-  margin-top: 4px;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.5rem;
 }
 
 .btn {
-  border: 1px solid #666;
-  border-radius: 0;
-  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  padding: 0.52rem 0.9rem;
   font: inherit;
-  font-weight: 400;
+  font-weight: 600;
   cursor: pointer;
-  transition: none;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
 }
 
 .btn:hover {
-  transform: none;
+  transform: translateY(-1px);
 }
 
 .btn:disabled {
-  opacity: 0.65;
+  opacity: 0.66;
   cursor: not-allowed;
   transform: none;
 }
 
 .btn-primary {
-  background: #ddd;
-  color: #000;
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+  color: white;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-700) 35%, transparent);
 }
 
 .btn-ghost {
-  background: #eee;
-  border-color: #666;
-  color: #000;
+  background: color-mix(in srgb, var(--brand-500) 8%, white);
+  border-color: var(--line);
+  color: var(--text-strong);
 }
 
 .btn-danger {
-  background: #d9d9d9;
-  color: #000;
+  background: color-mix(in srgb, var(--danger) 14%, white);
+  border-color: color-mix(in srgb, var(--danger) 24%, white);
+  color: var(--danger-deep);
 }
 
 .panel-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
 }
 
 .note-list {
@@ -144,59 +177,123 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 6px;
+  gap: 0.7rem;
 }
 
 .note-card {
-  border: 1px dashed #888;
-  border-radius: 0;
-  background: #fff;
-  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: white;
+  padding: 0.75rem;
+  transition: border-color 0.16s ease, transform 0.16s ease;
+  animation: rise-in 0.3s ease both;
+}
+
+.note-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
 }
 
 .note-card h3 {
-  margin: 0 0 2px;
-  font-size: 14px;
-  color: #000;
+  margin: 0 0 0.25rem;
+  font-size: 1.02rem;
+  color: var(--text-strong);
 }
 
 .note-card p {
   margin: 0;
-  color: #333;
+  color: var(--text-soft);
   white-space: pre-wrap;
 }
 
 .note-card small {
   display: block;
-  margin-top: 4px;
-  color: #666;
+  margin-top: 0.55rem;
+  color: var(--muted);
 }
 
 .card-actions {
   display: flex;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 0.45rem;
+  margin-top: 0.6rem;
 }
 
 .empty-state {
   margin: 0;
-  color: #444;
+  color: var(--text-soft);
 }
 
 .error-text {
   margin: 0;
-  color: #b42318;
+  color: var(--danger);
   font-size: 0.9rem;
 }
 
 .success-text {
   margin: 0;
-  color: #0f766e;
+  color: var(--ok);
   font-size: 0.9rem;
 }
 
 .helper-text {
-  margin-top: 0;
-  color: #666;
-  font-size: 12px;
+  margin-top: -0.1rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+@media (min-width: 900px) {
+  .layout-grid {
+    grid-template-columns: minmax(300px, 0.95fr) minmax(440px, 1.4fr);
+    align-items: start;
+  }
+
+  .panel-form {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(1120px, 100% - 1rem);
+    margin-top: 1rem;
+  }
+
+  .panel {
+    border-radius: 14px;
+    padding: 0.85rem;
+  }
+
+  .panel-top {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .panel-top .btn {
+    width: 100%;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

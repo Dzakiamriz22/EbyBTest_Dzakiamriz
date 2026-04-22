@@ -1,6 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Source+Sans+3:wght@400;600;700&display=swap');
+
 :root {
-  --heading: Arial, sans-serif;
-  --body: Arial, sans-serif;
+  --heading: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --brand-500: #0f6e7d;
+  --brand-600: #0d5b6b;
+  --brand-700: #0b4250;
+  --text-strong: #1a2638;
+  --text-soft: #36485f;
+  --muted: #6c7d93;
+  --paper: rgba(255, 255, 255, 0.9);
+  --line: #d6dee7;
+  --line-strong: #b6c4d3;
+  --danger: #be2f3b;
+  --danger-deep: #8c212c;
+  --ok: #0f7f63;
 }
 
 * {
@@ -11,8 +25,12 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--body);
-  color: #000;
-  background: #e5e5e5;
+  color: var(--text-strong);
+  background:
+    radial-gradient(85rem 45rem at 10% -20%, #dff4f8, transparent 60%),
+    radial-gradient(70rem 42rem at 100% 0%, #fdeec9, transparent 58%),
+    linear-gradient(180deg, #f4f8fb 0%, #edf3f8 100%);
+  background-attachment: fixed;
 }
 
 #root {
@@ -25,8 +43,9 @@ h3 {
   margin: 0;
   font-family: var(--heading);
   line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 p {
-  line-height: 1.35;
+  line-height: 1.45;
 }

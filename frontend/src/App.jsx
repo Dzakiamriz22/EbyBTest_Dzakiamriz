@@ -35,6 +35,7 @@ function App() {
   const [success, setSuccess] = useState('')
 
   const isEditing = useMemo(() => editingId !== null, [editingId])
+  const totalNotes = useMemo(() => notes.length, [notes])
 
   async function apiRequest(url, options = {}, withAuth = true) {
     const headers = {
@@ -233,8 +234,13 @@ function App() {
         <p className="kicker">Notes App</p>
         <h1>Catatan Harian</h1>
         <p className="subtitle">
-          Login dulu, lalu cek fitur CRUD langsung.
+          Tulis dan rapikan catatan harianmu dengan cepat.
         </p>
+        {token && (
+          <div className="header-meta">
+            <span className="meta-pill is-live">{totalNotes} catatan tersimpan</span>
+          </div>
+        )}
       </header>
 
       {!token ? (
